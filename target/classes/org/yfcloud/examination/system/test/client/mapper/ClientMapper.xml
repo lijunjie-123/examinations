@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.yfcloud.examination.system.test.client.dao.ClientMapper" >
+<resultMap id="BaseResultMap" type="org.yfcloud.examination.system.test.client.model.Client" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="INTEGER" />
+
+    <!--一对多一个方法-->
+    <collection property="clientFileList" ofType="org.yfcloud.examination.system.test.client.model.ClientFile">
+        <id property="id" column="fileId" jdbcType="VARCHAR" />
+        <result property="name" column="fileName" jdbcType="VARCHAR" />
+        <result property="path" column="path" jdbcType="VARCHAR"/>
+        <result property="clientId" column="client_id" jdbcType="VARCHAR"/>
+    </collection>
+
+    <!--一对多两个方法-->
+    <!--<collection property="clientFileList" ofType="org.yfcloud.examination.system.test.client.model.ClientFile"
+                column="id" select="getClientFileList">
+
+    </collection>-->
+
+</resultMap>
+
+<select id="getListClient" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT
+    a.id , a.name , a.age ,
+    cf.id AS fileId, cf.name AS fileName , cf.path , cf.client_id
+    FROM client a
+    LEFT JOIN client_file cf on a.id=cf.client_id
+    WHERE a.id = #{id}
+</select>
+
+
+<!-- 一对多两个方法-->
+<!--  <select id="getListClient" resultMap="BaseResultMap" parameterType="java.lang.String">
+      SELECT
+      a.id , a.name , a.age
+      FROM client a
+      WHERE id = #{id}
+  </select>
+
+  <select id="getClientFileList" resultType="org.yfcloud.examination.system.test.client.model.ClientFile" parameterType="java.lang.String">
+      SELECT
+      b.id , b.name , b.path , b.client_id
+      FROM client_file b
+      WHERE client_id = #{id}
+  </select>-->
+
+</mapper>
+
+<!--多对一mapper配置-->
+
+<!--<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.yfcloud.examination.system.test.client.dao.ClientMapper" >
+<resultMap id="BaseResultMap" type="org.yfcloud.examination.system.test.client.model.ClientFile" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="path" property="path" jdbcType="VARCHAR" />
+    <result property="clientId" column="client_id" jdbcType="VARCHAR" />
+    <association property="clientInfo" javaType="org.yfcloud.examination.system.test.client.model.Client">
+        <id property="id" column="c_id" jdbcType="VARCHAR"/>
+        <result property="name" column="clientName" jdbcType="VARCHAR"/>
+        <result property="age" column="age" jdbcType="INTEGER"/>
+    </association>
+</resultMap>
+
+
+<select id="getListClientFile" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT
+    cf.id , cf.name , cf.path ,cf.client_id
+    , a.id AS c_id  , a.name  AS clientName, a.age
+    FROM client_file cf
+    LEFT JOIN client a on cf.client_id = a.id
+    WHERE cf.id= #{id}
+</select>
+
+</mapper>-->
+
+
